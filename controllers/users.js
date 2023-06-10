@@ -1,11 +1,16 @@
+/* eslint-disable import/no-unresolved */
 const User = require('../models/user');
+
+const INCORRECT_DATA = 400;
+const NOT_FOUND = 404;
+const ERROR = 500;
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => {
       res.send(users);
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(ERROR).send({ message: 'Произошла ошибка на сервере' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -13,12 +18,15 @@ module.exports.getUserById = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        console.log('Пользователь не найден');
-        return;
+        throw new Error(`Пользователь c id: ${userId} не найден`);
       }
       res.send({ data: user });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => {
+      res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
+      res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+    });
 };
 
 module.exports.createUser = (req, res) => {
@@ -28,25 +36,41 @@ module.exports.createUser = (req, res) => {
     .then(() => {
       res.send({ data: { name, about, avatar } });
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => res.status(ERROR).send({ message: 'Произошла ошибка на сервере' }));
 };
 
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about }, { new: true })
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(userId, { name, about }, { new: true })
     .then((user) => {
       if (!user) {
-        console.log('Пользователь не найден');
-        return;
+        throw new Error(`Пользователь c id: ${userId} не найден`);
       }
       res.send(user);
     })
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+    .catch(() => {
+      res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
+      res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+    });
 };
 
 module.exports.updateUserAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar }, { new: true })
-    .then((user) => res.send(user))
-    .catch(() => res.status(500).send({ message: 'Произошла ошибка' }));
+  const userId = req.user._id;
+
+  User.findByIdAndUpdate(userId, { avatar }, { new: true })
+    .then((user) => {
+      if (!user) {
+        throw new Error(`Пользователь c id: ${userId} не найден`);
+      }
+      res.send(user);
+    })
+    .catch(() => {
+      res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
+      res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+    });
 };
