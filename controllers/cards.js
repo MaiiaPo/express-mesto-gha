@@ -1,15 +1,16 @@
 /* eslint-disable import/no-unresolved */
 const Card = require('../models/card');
-
-const INCORRECT_DATA = 400;
-const NOT_FOUND = 404;
-const ERROR = 500;
+const {
+  INCORRECT_DATA_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  DEFAULT_ERROR_CODE,
+} = require('../utils/constants');
 
 module.exports.getCards = (req, res) => {
   Card.find({})
     .populate('owner')
     .then((cards) => res.send(cards))
-    .catch(() => res.status(ERROR).send({ message: 'Произошла ошибка на сервере' }));
+    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' }));
 };
 
 module.exports.createCard = (req, res) => {
@@ -19,9 +20,9 @@ module.exports.createCard = (req, res) => {
     .then((card) => res.send(card))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -30,11 +31,11 @@ module.exports.deleteCardById = (req, res) => {
   Card.findByIdAndRemove(cardId)
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       return res.send(card);
     })
-    .catch(() => res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` }));
+    .catch(() => res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` }));
 };
 
 module.exports.likeCard = (req, res) => {
@@ -42,18 +43,18 @@ module.exports.likeCard = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $addToSet: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       return res.send(card);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       if (error.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -63,17 +64,17 @@ module.exports.dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(cardId, { $pull: { likes: req.user._id } }, { new: true })
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       return res.send(card);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       if (error.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };

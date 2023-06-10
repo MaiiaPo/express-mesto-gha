@@ -1,14 +1,16 @@
 /* eslint-disable import/no-unresolved */
 const User = require('../models/user');
 
-const INCORRECT_DATA = 400;
-const NOT_FOUND = 404;
-const ERROR = 500;
+const {
+  INCORRECT_DATA_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  DEFAULT_ERROR_CODE,
+} = require('../utils/constants');
 
 module.exports.getUsers = (req, res) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => res.status(ERROR).send({ message: 'Произошла ошибка на сервере' }));
+    .catch(() => res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' }));
 };
 
 module.exports.getUserById = (req, res) => {
@@ -16,18 +18,18 @@ module.exports.getUserById = (req, res) => {
   User.findById(userId)
     .then((user) => {
       if (!user) {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       return res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       if (error.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -38,9 +40,9 @@ module.exports.createUser = (req, res) => {
     .then((user) => res.send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
-      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -51,18 +53,18 @@ module.exports.updateUser = (req, res) => {
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       return res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       if (error.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -73,17 +75,17 @@ module.exports.updateUserAvatar = (req, res) => {
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
     .then((user) => {
       if (!user) {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       return res.send(user);
     })
     .catch((error) => {
       if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       if (error.name === 'CastError') {
-        return res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
-      return res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
 };

@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = require('./routes');
 
+const { INCORRECT_DATA_ERROR_CODE} = require('./utils/constants');
+
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 const { PORT = 3000 } = process.env;
@@ -18,6 +20,9 @@ app.use((req, res, next) => {
 });
 
 app.use(router);
+app.use((req, res) => {
+  res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Несуществующая страница' });
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
