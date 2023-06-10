@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = require('./routes');
 
-const { INCORRECT_DATA_ERROR_CODE} = require('./utils/constants');
+const { INCORRECT_DATA_ERROR_CODE } = require('./utils/constants');
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
