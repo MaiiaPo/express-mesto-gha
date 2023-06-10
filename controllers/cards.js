@@ -20,7 +20,10 @@ module.exports.createCard = (req, res) => {
     .then((card) => {
       res.send(card);
     })
-    .catch(() => res.status(ERROR).send({ message: 'Произошла ошибка на сервере' }));
+    .catch(() => {
+      res.status(INCORRECT_DATA).send({ message: 'Переданы некорректные данные' });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
+    });
 };
 
 module.exports.deleteCardById = (req, res) => {
