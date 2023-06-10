@@ -25,7 +25,7 @@ module.exports.getUserById = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
       res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -53,7 +53,7 @@ module.exports.updateUser = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
       res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -71,6 +71,6 @@ module.exports.updateUserAvatar = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${userId}` });
       res.status(NOT_FOUND).send({ message: `Пользователь с id: ${userId} не найден` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };

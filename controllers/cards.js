@@ -35,7 +35,7 @@ module.exports.deleteCardById = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${cardId}` });
       res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -51,7 +51,7 @@ module.exports.likeCard = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${cardId}` });
       res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
 
@@ -68,6 +68,6 @@ module.exports.dislikeCard = (req, res) => {
     .catch(() => {
       res.status(INCORRECT_DATA).send({ message: `Передан некорректный id: ${cardId}` });
       res.status(NOT_FOUND).send({ message: `Карточка с id: ${cardId} не найдена` });
-      res.status(ERROR).send({ message: `Произошла ошибка на сервере` });
+      res.status(ERROR).send({ message: 'Произошла ошибка на сервере' });
     });
 };
