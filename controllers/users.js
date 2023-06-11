@@ -16,18 +16,14 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
   const { userId } = req.params;
   User.findById(userId)
-    .then((user) => {
-      if (!user) {
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
+    .catch((error) => {
+      if (error.name === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
-      return res.send(user);
-    })
-    .catch((error) => {
-      if (error.name === 'ValidationError') {
+      if (error.name === 'ValidationError' || error.name === 'CastError') {
         return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
-      }
-      if (error.name === 'CastError') {
-        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
@@ -37,7 +33,7 @@ module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body;
 
   User.create({ name, about, avatar })
-    .then((user) => res.send(user))
+    .then((user) => res.status(201).send(user))
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
@@ -51,18 +47,14 @@ module.exports.updateUser = (req, res) => {
   const userId = req.user._id;
 
   User.findByIdAndUpdate(userId, { name, about }, { new: true, runValidators: true })
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
-      }
-      return res.send(user);
-    })
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
-      }
-      if (error.name === 'CastError') {
+      if (error.name === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
+      }
+      if (error.name === 'ValidationError' || error.name === 'CastError') {
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
@@ -73,18 +65,14 @@ module.exports.updateUserAvatar = (req, res) => {
   const userId = req.user._id;
 
   User.findByIdAndUpdate(userId, { avatar }, { new: true, runValidators: true })
-    .then((user) => {
-      if (!user) {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
-      }
-      return res.send(user);
-    })
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'ValidationError') {
-        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
-      }
-      if (error.name === 'CastError') {
+      if (error.name === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
+      }
+      if (error.name === 'ValidationError' || error.name === 'CastError') {
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
