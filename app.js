@@ -19,7 +19,9 @@ app.use((req, res, next) => {
   next();
 });
 
+router.use(express.json());
 app.use(router);
+
 app.use((req, res) => {
   res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Несуществующая страница' });
 });
