@@ -19,7 +19,7 @@ module.exports.getUserById = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -50,7 +50,7 @@ module.exports.updateUser = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -68,7 +68,7 @@ module.exports.updateUserAvatar = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((user) => res.send(user))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {

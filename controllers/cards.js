@@ -32,7 +32,7 @@ module.exports.deleteCardById = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((card) => res.send(card))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
@@ -45,7 +45,7 @@ module.exports.likeCard = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((card) => res.send(card))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {
@@ -62,7 +62,7 @@ module.exports.dislikeCard = (req, res) => {
     .orFail(new Error('NotValidId'))
     .then((card) => res.send(card))
     .catch((error) => {
-      if (error.name === 'NotValidId') {
+      if (error.message === 'NotValidId') {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Карточка с id: ${cardId} не найдена` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {
