@@ -1,4 +1,6 @@
 /* eslint-disable import/no-unresolved */
+// eslint-disable-next-line import/no-extraneous-dependencies
+const bcrypt = require('bcryptjs');
 const User = require('../models/user');
 
 const {
@@ -30,10 +32,27 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
+  const {
+    name, about, avatar, email, password,
+  } = req.body;
 
-  User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      email,
+      password: hash,
+      name,
+      about,
+      avatar,
+    }))
+    .then((user) => {
+      const {
+        // eslint-disable-next-line no-shadow
+        email, name, about, avatar,
+      } = user;
+      return res.status(201).send({
+        email, name, about, avatar,
+      });
+    })
     .catch((error) => {
       if (error.name === 'ValidationError') {
         res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
