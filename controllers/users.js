@@ -2,6 +2,7 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcryptjs');
 const User = require('../models/user');
+const jwt = require('jsonwebtoken');
 
 const {
   INCORRECT_DATA_ERROR_CODE,
@@ -95,4 +96,19 @@ module.exports.updateUserAvatar = (req, res) => {
       }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
+};
+
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign(
+        { _id: user._id },
+        'some-secret-key',
+        { expiresIn: '7d' },
+      );
+      return res.send({ token });
+    })
+    .catch((error) => res.status(401).send({ message: error.message }));
 };
