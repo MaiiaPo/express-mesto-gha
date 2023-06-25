@@ -1,8 +1,8 @@
 /* eslint-disable import/no-unresolved */
 // eslint-disable-next-line import/no-extraneous-dependencies
 const bcrypt = require('bcryptjs');
-const User = require('../models/user');
 const jwt = require('jsonwebtoken');
+const User = require('../models/user');
 
 const {
   INCORRECT_DATA_ERROR_CODE,
@@ -111,4 +111,19 @@ module.exports.login = (req, res) => {
       return res.send({ token });
     })
     .catch((error) => res.status(401).send({ message: error.message }));
+};
+
+module.exports.getCurrentUser = (req, res) => {
+  User.findById(req.user._id)
+    .orFail(new Error('NotValidId'))
+    .then((user) => res.send(user))
+    .catch((err) => {
+      if (err.message === 'NotValidId') {
+        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${req.user._id} не найден` });
+      }
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+      }
+      return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
+    });
 };
