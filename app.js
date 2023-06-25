@@ -3,11 +3,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, errors } = require('celebrate');
 const router = require('./routes');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
-const errors = require('./middlewares/errors');
+const errorsHandler = require('./middlewares/errors');
 
 const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
 
@@ -43,7 +43,8 @@ app.use((req, res) => {
   res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Несуществующая страница' });
 });
 
-app.use(errors);
+app.use(errors());
+app.use(errorsHandler);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
