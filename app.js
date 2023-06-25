@@ -9,6 +9,7 @@ const {
   createUser,
 } = require('./controllers/users');
 const auth = require('./middlewares/auth');
+const errors = require('./middlewares/errors');
 
 const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
 
@@ -28,6 +29,8 @@ app.use(router);
 app.use((req, res) => {
   res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Несуществующая страница' });
 });
+
+app.use(errors);
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
