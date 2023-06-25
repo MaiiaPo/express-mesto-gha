@@ -1,5 +1,4 @@
-/* eslint-disable import/no-unresolved */
-// eslint-disable-next-line import/no-extraneous-dependencies
+/* eslint-disable import/no-extraneous-dependencies */
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
@@ -26,7 +25,7 @@ module.exports.getUserById = (req, res) => {
         return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${userId} не найден` });
       }
       if (error.name === 'ValidationError' || error.name === 'CastError') {
-        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+        return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: '345 Переданы некорректные данные' });
       }
       return res.status(DEFAULT_ERROR_CODE).send({ message: 'Произошла ошибка на сервере' });
     });
@@ -103,11 +102,7 @@ module.exports.login = (req, res) => {
 
   return User.findUserByCredentials(email, password)
     .then((user) => {
-      const token = jwt.sign(
-        { _id: user._id },
-        'some-secret-key',
-        { expiresIn: '7d' },
-      );
+      const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       return res.send({ token });
     })
     .catch((error) => res.status(401).send({ message: error.message }));
@@ -115,12 +110,8 @@ module.exports.login = (req, res) => {
 
 module.exports.getCurrentUser = (req, res) => {
   User.findById(req.user._id)
-    .orFail(new Error('NotValidId'))
     .then((user) => res.send(user))
     .catch((err) => {
-      if (err.message === 'NotValidId') {
-        return res.status(NOT_FOUND_ERROR_CODE).send({ message: `Пользователь с id: ${req.user._id} не найден` });
-      }
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         return res.status(INCORRECT_DATA_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
       }
