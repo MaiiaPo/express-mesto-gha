@@ -42,9 +42,9 @@ app.use(router);
 app.use((req, res) => {
   res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Несуществующая страница' });
 });
-
-app.use(errors());
 app.use(errorsHandler);
+app.use(errors());
+
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
