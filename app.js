@@ -4,6 +4,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const router = require('./routes');
+const {
+  login,
+  createUser,
+} = require('./controllers/users');
+const auth = require('./middlewares/auth');
 
 const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
 
@@ -19,6 +24,10 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post('/signin', login);
+app.post('/signup', createUser);
+
+app.use(auth);
 router.use(express.json());
 app.use(router);
 
