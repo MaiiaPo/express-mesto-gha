@@ -26,16 +26,14 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findById(cardId)
+  Card.findByIdAndRemove(cardId)
     .orFail(new Error('NotValidId'))
-    // eslint-disable-next-line consistent-return
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Нельзя удалить чужую карточку'));
       }
-      Card.findOneAndRemove(cardId)
-        .then(() => res.send(card))
-        .catch((err) => next(err));
+
+      return res.send(card);
     })
     .catch((error) => {
       if (error.message === 'NotValidId') {

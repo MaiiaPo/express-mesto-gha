@@ -1,5 +1,9 @@
-const urlRegx = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const INCORRECT_DATA_ERROR_CODE = 400;
+const NOT_FOUND_ERROR_CODE = 404;
+const DEFAULT_ERROR_CODE = 500;
 
 module.exports = {
-  urlRegx,
+  INCORRECT_DATA_ERROR_CODE,
+  NOT_FOUND_ERROR_CODE,
+  DEFAULT_ERROR_CODE,
 };
