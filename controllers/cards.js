@@ -26,14 +26,15 @@ module.exports.createCard = (req, res, next) => {
 
 module.exports.deleteCardById = (req, res, next) => {
   const { cardId } = req.params;
-  Card.findByIdAndRemove(cardId)
+  Card.findById(cardId)
     .orFail(new Error('NotValidId'))
     .then((card) => {
       if (!card.owner.equals(req.user._id)) {
         return next(new ForbiddenError('Нельзя удалить чужую карточку'));
       }
-
-      return res.send(card);
+      return Card.deleteOne(card)
+        .then(() => res.send(card))
+        .catch((error) => next(error));
     })
     .catch((error) => {
       if (error.message === 'NotValidId') {
