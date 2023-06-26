@@ -1,8 +1,7 @@
 const cardRoutes = require('express').Router();
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi } = require('celebrate');
-
-const regURL = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { urlRegx } = require('../utils/constants');
 
 const {
   getCards,
@@ -16,7 +15,7 @@ cardRoutes.get('/', getCards);
 cardRoutes.post('/', celebrate({
   body: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().regex(regURL),
+    link: Joi.string().required().regex(urlRegx),
   }),
 }), createCard);
 

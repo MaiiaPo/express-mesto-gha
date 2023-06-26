@@ -1,8 +1,7 @@
 const userRoutes = require('express').Router();
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { celebrate, Joi } = require('celebrate');
-
-const regURL = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { urlRegx } = require('../utils/constants');
 
 const {
   getUsers,
@@ -27,7 +26,7 @@ userRoutes.patch('/me', celebrate({
 }), updateUser);
 userRoutes.patch('/me/avatar', celebrate({
   body: Joi.object().keys({
-    avatar: Joi.string().regex(regURL),
+    avatar: Joi.string().regex(urlRegx),
   }),
 }), updateUserAvatar);
 

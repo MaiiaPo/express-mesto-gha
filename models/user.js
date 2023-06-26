@@ -2,8 +2,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
-
-const regURL = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { urlRegx } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema(
   {
@@ -25,7 +24,7 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
       validate: {
-        validator: (v) => regURL.test(v),
+        validator: (v) => urlRegx.test(v),
         message: 'Некорректный URL',
       },
       required: false,
