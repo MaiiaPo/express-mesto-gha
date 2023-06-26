@@ -8,8 +8,7 @@ const router = require('./routes');
 const { login, createUser } = require('./controllers/users');
 const auth = require('./middlewares/auth');
 const errorsHandler = require('./middlewares/errors');
-
-const { NOT_FOUND_ERROR_CODE } = require('./utils/constants');
+const NotFoundError = require('./errors/not-found-err');
 
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
@@ -39,8 +38,8 @@ app.use(auth);
 router.use(express.json());
 app.use(router);
 
-app.use((req, res) => {
-  res.status(NOT_FOUND_ERROR_CODE).send({ message: 'Несуществующая страница' });
+app.use((req, res, next) => {
+  return next(new NotFoundError('Несуществующая страница'));
 });
 
 app.use(errors());
