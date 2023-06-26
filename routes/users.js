@@ -1,8 +1,5 @@
 const userRoutes = require('express').Router();
-// eslint-disable-next-line import/no-extraneous-dependencies
-const { celebrate, Joi } = require('celebrate');
-
-const regURL = /https?:\/\/(www\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_+.~#?&//=]*)/;
+const { validationUser, validationUserId, validationAvatar } = require('../middlewares/validation');
 
 const {
   getUsers,
@@ -14,21 +11,8 @@ const {
 
 userRoutes.get('/', getUsers);
 userRoutes.get('/me', getCurrentUser);
-userRoutes.get('/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().required().hex().length(24),
-  }),
-}), getUserById);
-userRoutes.patch('/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-  }),
-}), updateUser);
-userRoutes.patch('/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().regex(regURL),
-  }),
-}), updateUserAvatar);
+userRoutes.get('/:userId', validationUserId, getUserById);
+userRoutes.patch('/me', validationUser, updateUser);
+userRoutes.patch('/me/avatar', validationAvatar, updateUserAvatar);
 
 module.exports = userRoutes;
