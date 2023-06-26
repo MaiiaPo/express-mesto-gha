@@ -38,9 +38,7 @@ app.use(auth);
 router.use(express.json());
 app.use(router);
 
-app.use((req, res, next) => {
-  return next(new NotFoundError('Несуществующая страница'));
-});
+app.use((req, res, next) => next(new NotFoundError('Несуществующая страница')));
 
 app.use(errors());
 app.use(errorsHandler);
